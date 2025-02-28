@@ -1,0 +1,79 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - "feature/**"  # Trigger workflow for feature branches
+      - "feat/**"  # Trigger workflow for feature branches
+      - "doc/**"  # Trigger workflow for feature branches
+      - "chore/**"  # Trigger workflow for feature branches
+      - "fix/**"  # Trigger workflow for feature branches
+  pull_request:
+    branches:
+      - main
+
+jobs:
+
+  api:
+    name: API Build & Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: yarn
+          cache-dependency-path: api/yarn-lock.json # Specify the path to your yarn.lock
+
+      - name: Install Dependencies (API)
+        working-directory: api
+        run: yarn install --frozen-lockfile
+
+      #- name: Lint API
+      #  run: npm run lint
+
+      - name: Run Tests (API)
+        run: yarn test
+
+  # Webapp (Next.js) Build & Test
+  webapp:
+    name: Webapp Build & Test
+    runs-on: ubuntu-latest
+    defaults:
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: yarn
+          cache-dependency-path: webapp/yarn-lock.json
+
+      - name: Install Dependencies (Webapp)
+        run: yarn install --frozen-lockfile
+
+      - name: Lint Webapp
+        run: yarn lint
+
+      #- name: Run Tests (Webapp)
+       # run: npm test
+
+      - name: Build Webapp
+        run: yarn build
+
+  # Merge Blocker: Ensure Both Builds Pass
+  merge_guard:
+    name: Ensure All Jobs Passed
+    needs: [api, webapp]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check for Failures
+        run: echo "All jobs passed!"

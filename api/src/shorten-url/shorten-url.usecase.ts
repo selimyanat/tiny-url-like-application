@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { AppGlobalIdGeneratorService } from './app.global-id-generator.service';
+import { ShortenUrlIdGeneratorService } from './shorten-url.id-generator.service';
 
 @Injectable()
-export class AppService {
+export class ShortenUrlUsecase {
   private static BASE62_CHARACTERS =
     '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 
-  private static BASE62 = AppService.BASE62_CHARACTERS.length;
+  private static BASE62 = ShortenUrlUsecase.BASE62_CHARACTERS.length;
 
-  constructor(private readonly idGenerator: AppGlobalIdGeneratorService) {}
+  constructor(private readonly idGenerator: ShortenUrlIdGeneratorService) {}
 
   createTinyURL(originalURL: string): string {
     const id = this.idGenerator.generateId();
@@ -20,13 +20,13 @@ export class AppService {
   }
 
   private encodeBase62(id: number): string {
-    if (id === 0) return AppService.BASE62_CHARACTERS[0];
+    if (id === 0) return ShortenUrlUsecase.BASE62_CHARACTERS[0];
 
     let encoded = '';
     while (id > 0) {
-      const remainder = id % AppService.BASE62;
-      encoded = AppService.BASE62_CHARACTERS[remainder] + encoded;
-      id = Math.floor(id / AppService.BASE62);
+      const remainder = id % ShortenUrlUsecase.BASE62;
+      encoded = ShortenUrlUsecase.BASE62_CHARACTERS[remainder] + encoded;
+      id = Math.floor(id / ShortenUrlUsecase.BASE62);
     }
     return encoded;
   }

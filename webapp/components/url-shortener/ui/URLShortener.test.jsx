@@ -93,7 +93,7 @@ describe('URLShortenerV2', () => {
     });
   });
 
-  it("clicking the 'Shorten' for an empty url triggers an error messahe", async () => {
+  it("clicking the 'Shorten' for an empty url triggers an error message", async () => {
     render(<URLShortener />);
 
     const shortenButton = screen.getByRole('button', { name: /shorten url/i });
