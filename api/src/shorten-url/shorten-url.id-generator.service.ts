@@ -12,41 +12,33 @@ import { ConfigService } from '@nestjs/config';
  * The machineId ID is a custom value that should be unique for each instance of the generator.
  */
 @Injectable()
-export class AppGlobalIdGeneratorService {
+export class ShortenUrlIdGeneratorService {
   private static readonly MACHINE_ID_BITS = 10;
   private static readonly SEQUENCE_BITS = 12;
-
+  // indexing starts at 0: 2^(MACHINE_ID_BITS) - 1
+  private static readonly MAX_MACHINE_ID =
+    (1 << ShortenUrlIdGeneratorService.MACHINE_ID_BITS) - 1;
+  // indexing starts at 0: 2^(SEQUENCE_BITS) - 1
+  private static readonly MAX_SEQUENCE =
+    (1 << ShortenUrlIdGeneratorService.SEQUENCE_BITS) - 1;
   private readonly epoch: number = 1609459200000;
   // TODO must be configurable
   private readonly machineId: number = 1;
   private sequence: number;
   private lastTimestamp: number;
 
-  // indexing starts at 0: 2^(MACHINE_ID_BITS) - 1
-  private static readonly MAX_MACHINE_ID =
-    (1 << AppGlobalIdGeneratorService.MACHINE_ID_BITS) - 1;
-  // indexing starts at 0: 2^(SEQUENCE_BITS) - 1
-  private static readonly MAX_SEQUENCE =
-    (1 << AppGlobalIdGeneratorService.SEQUENCE_BITS) - 1;
-
   constructor(private readonly configService: ConfigService) {
     this.machineId = Number(this.configService.get<number>('MACHINE_ID'));
     if (
       this.machineId < 0 ||
-      this.machineId > AppGlobalIdGeneratorService.MAX_MACHINE_ID
+      this.machineId > ShortenUrlIdGeneratorService.MAX_MACHINE_ID
     ) {
       throw new Error(
-        `Invalid MACHINE_ID. Must be between 0 and ${AppGlobalIdGeneratorService.MAX_MACHINE_ID}.`,
+        `Invalid MACHINE_ID. Must be between 0 and ${ShortenUrlIdGeneratorService.MAX_MACHINE_ID}.`,
       );
     }
     this.sequence = 0;
     this.lastTimestamp = -1;
-  }
-
-  private waitUntilNextMillisecond(): void {
-    while (this.lastTimestamp <= Date.now()) {
-      this.lastTimestamp = Date.now();
-    }
   }
 
   /**
@@ -67,7 +59,7 @@ export class AppGlobalIdGeneratorService {
 
     if (currentTimestamp === this.lastTimestamp) {
       this.sequence =
-        (this.sequence + 1) & AppGlobalIdGeneratorService.MAX_SEQUENCE;
+        (this.sequence + 1) & ShortenUrlIdGeneratorService.MAX_SEQUENCE;
       if (this.sequence == 0) {
         this.waitUntilNextMillisecond();
       }
@@ -84,15 +76,21 @@ export class AppGlobalIdGeneratorService {
 
     // prettier-ignore
     const id =
-      (BigInt(currentTimestamp - this.epoch) <<
-        BigInt(
-          AppGlobalIdGeneratorService.MACHINE_ID_BITS +
-            AppGlobalIdGeneratorService.SEQUENCE_BITS,
-        )) |
-      (BigInt(this.machineId) <<
-        BigInt(AppGlobalIdGeneratorService.SEQUENCE_BITS)) |
-      BigInt(this.sequence);
+            (BigInt(currentTimestamp - this.epoch) <<
+                BigInt(
+                    ShortenUrlIdGeneratorService.MACHINE_ID_BITS +
+                    ShortenUrlIdGeneratorService.SEQUENCE_BITS,
+                )) |
+            (BigInt(this.machineId) <<
+                BigInt(ShortenUrlIdGeneratorService.SEQUENCE_BITS)) |
+            BigInt(this.sequence);
 
     return id;
+  }
+
+  private waitUntilNextMillisecond(): void {
+    while (this.lastTimestamp <= Date.now()) {
+      this.lastTimestamp = Date.now();
+    }
   }
 }

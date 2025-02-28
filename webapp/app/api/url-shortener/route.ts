@@ -15,13 +15,26 @@ export async function POST(request: NextRequest) {
 
 // Example function to simulate URL shortening logic
 async function shortenUrl(url: string): Promise<string> {
-  // Replace this with your actual URL shortening implementation
-  // call an http service, generate a random string, etc
-  const response = await fetch('http://localhost:3001');
-  if (!response.ok) {
-    throw new Error('Failed to shorten URL');
+  try {
+    const response = await fetch('http://localhost:3001/shorten-url', {
+      method: 'POST', // Use POST method
+      headers: {
+        'Content-Type': 'application/json', // Inform the server we are sending JSON
+      },
+      body: JSON.stringify({ url }), // Send URL in request body
+    });
+
+    console.log(response);
+
+    if (!response.ok) {
+      throw new Error(`Failed to shorten URL: ${response.statusText}`);
+    }
+
+    const data = await response.text(); // Assume server returns JSON
+    console.log('URL shortened successfully:', data);
+    return data; // Adjust this based on the API response structure
+  } catch (error) {
+    console.error('Error shortening URL:', error);
+    throw error;
   }
-  const data = await response.text();
-  console.log('URL shortened successfully:' + data);
-  return data as string;
 }
