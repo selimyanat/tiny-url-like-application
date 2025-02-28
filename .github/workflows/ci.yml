@@ -31,7 +31,7 @@ jobs:
         with:
           node-version: 18
           cache: yarn
-          cache-dependency-path: api/yarn-lock.json #  Specify the path to your yarn.lock
+          cache-dependency-path: api/yarn.lock #  Specify the path to your yarn.lock
 
       - name: Install Dependencies (API)
         working-directory: api
@@ -60,7 +60,7 @@ jobs:
         with:
           node-version: 18
           cache: yarn
-          cache-dependency-path: webapp/yarn-lock.json
+          cache-dependency-path: webapp/yarn.lock #  Specify the path to your yarn.lock
 
       - name: Install Dependencies (Webapp)
         run: yarn install --frozen-lockfile
