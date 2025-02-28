@@ -44,7 +44,6 @@ jobs:
   webapp:
     name: Webapp Build & Test
     runs-on: ubuntu-latest
-    defaults:
 
     steps:
       - name: Checkout Repository
@@ -64,7 +63,7 @@ jobs:
         run: yarn lint
 
       #- name: Run Tests (Webapp)
-       # run: npm test
+      # run: npm test
 
       - name: Build Webapp
         run: yarn build
@@ -72,7 +71,7 @@ jobs:
   # Merge Blocker: Ensure Both Builds Pass
   merge_guard:
     name: Ensure All Jobs Passed
-    needs: [api, webapp]
+    needs: [ api, webapp ]
     runs-on: ubuntu-latest
     steps:
       - name: Check for Failures
