@@ -18,6 +18,9 @@ jobs:
   api:
     name: API Build & Test
     runs-on: ubuntu-latest
+    defaults:
+        run:
+            working-directory: api
 
     steps:
       - name: Checkout Repository
@@ -44,6 +47,9 @@ jobs:
   webapp:
     name: Webapp Build & Test
     runs-on: ubuntu-latest
+    defaults:
+        run:
+            working-directory: webapp
 
     steps:
       - name: Checkout Repository
