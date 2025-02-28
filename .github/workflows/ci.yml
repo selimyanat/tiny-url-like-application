@@ -3,12 +3,7 @@ name: Tiny URL CI Pipeline
 on:
   push:
     branches:
-      - main
-      - 'feature/**'  # Trigger workflow for feature branches
-      - 'feat/**'  # Trigger workflow for feature branches
-      - 'doc/**'  # Trigger workflow for feature branches
-      - 'chore/**'  # Trigger workflow for feature branches
-      - 'fix/**'  # Trigger workflow for feature branches
+      - '**'
   pull_request:
     branches:
       - main
