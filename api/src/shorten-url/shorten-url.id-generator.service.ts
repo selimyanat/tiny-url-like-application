@@ -28,6 +28,10 @@ export class ShortenUrlIdGeneratorService {
   private lastTimestamp: number;
 
   constructor(private readonly configService: ConfigService) {
+    // check if the machine id is not null
+    if (!this.configService.get<number>('MACHINE_ID'))
+      throw new Error('MACHINE_ID is not defined in the environment variables');
+
     this.machineId = Number(this.configService.get<number>('MACHINE_ID'));
     if (
       this.machineId < 0 ||

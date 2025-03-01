@@ -3,12 +3,7 @@ name: Tiny URL CI Pipeline
 on:
   push:
     branches:
-      - main
-      - 'feature/**'  # Trigger workflow for feature branches
-      - 'feat/**'  # Trigger workflow for feature branches
-      - 'doc/**'  # Trigger workflow for feature branches
-      - 'chore/**'  # Trigger workflow for feature branches
-      - 'fix/**'  # Trigger workflow for feature branches
+      - '**'
   pull_request:
     branches:
       - main
@@ -18,6 +13,9 @@ jobs:
   api:
     name: API Build & Test
     runs-on: ubuntu-latest
+    defaults:
+        run:
+            working-directory: api
 
     steps:
       - name: Checkout Repository
@@ -28,7 +26,7 @@ jobs:
         with:
           node-version: 18
           cache: yarn
-          cache-dependency-path: api/yarn-lock.json # Specify the path to your yarn.lock
+          cache-dependency-path: api/yarn.lock #  Specify the path to your yarn.lock
 
       - name: Install Dependencies (API)
         working-directory: api
@@ -37,14 +35,24 @@ jobs:
       #- name: Lint API
       #  run: npm run lint
 
+      - name: Create .env file
+        run: |
+          echo "MACHINE_ID=1" > .env
+        working-directory: api  # Ensure it is created inside `api/`
+
       - name: Run Tests (API)
         run: yarn test
+
+      - name: Build API
+        run: yarn build
 
   # Webapp (Next.js) Build & Test
   webapp:
     name: Webapp Build & Test
     runs-on: ubuntu-latest
     defaults:
+        run:
+            working-directory: webapp
 
     steps:
       - name: Checkout Repository
@@ -55,7 +63,7 @@ jobs:
         with:
           node-version: 18
           cache: yarn
-          cache-dependency-path: webapp/yarn-lock.json
+          cache-dependency-path: webapp/yarn.lock #  Specify the path to your yarn.lock
 
       - name: Install Dependencies (Webapp)
         run: yarn install --frozen-lockfile
@@ -64,7 +72,7 @@ jobs:
         run: yarn lint
 
       #- name: Run Tests (Webapp)
-       # run: npm test
+      # run: npm test
 
       - name: Build Webapp
         run: yarn build
@@ -72,7 +80,7 @@ jobs:
   # Merge Blocker: Ensure Both Builds Pass
   merge_guard:
     name: Ensure All Jobs Passed
-    needs: [api, webapp]
+    needs: [ api, webapp ]
     runs-on: ubuntu-latest
     steps:
       - name: Check for Failures
