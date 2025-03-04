@@ -71,8 +71,8 @@ jobs:
       - name: Lint Webapp
         run: yarn lint
 
-      #- name: Run Tests (Webapp)
-      # run: npm test
+      - name: Run Tests (Webapp)
+        run: npm test
 
       - name: Build Webapp
         run: yarn build
