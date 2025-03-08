@@ -4,7 +4,7 @@ export const shortenURL = async (longUrl: string): Promise<string> => {
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ longUrl }),
+    body: JSON.stringify({ url: longUrl }),
   });
 
   if (!response.ok) {
@@ -13,5 +13,5 @@ export const shortenURL = async (longUrl: string): Promise<string> => {
   }
 
   const data = await response.json();
-  return data.shortenedUrl;
+  return data.shortenedUrl.shortenedUrl;
 };
