@@ -13,5 +13,5 @@ export const shortenURL = async (longUrl: string): Promise<string> => {
   }
 
   const data = await response.json();
-  return data.shortenedUrl.shortenedUrl;
+  return data.shortenedUrl;
 };

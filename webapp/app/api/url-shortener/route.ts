@@ -4,9 +4,6 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function POST(request: NextRequest) {
   try {
     const { url } = await request.json();
-
-    console.log('Sending request body:', request.body); // ✅ Debugging
-
     if (!url || typeof url !== 'string') {
       throw new Error(`Invalid URL format ${url}`);
     }
@@ -37,9 +34,7 @@ async function shortenUrl(url: string): Promise<string> {
       throw new Error(errorResponse.error || 'Failed to shorten URL');
     }
 
-    const data = await response.json(); // Expected { shortenedUrl: "https://short.ly/abc123" }
-    console.log('URL shortened successfully:', data);
-
+    const data = await response.json();
     return data;
   } catch (error) {
     console.error('Error shortening URL:', error);
