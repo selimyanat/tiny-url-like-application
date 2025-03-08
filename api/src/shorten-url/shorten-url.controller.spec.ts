@@ -1,17 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ShortenUrlController } from './shorten-url.controller';
-import { ShortenUrlUsecase } from './shorten-url.usecase';
-import { ShortenUrlIdGeneratorService } from './shorten-url.id-generator.service';
 import { ConfigModule } from '@nestjs/config';
+import { ShortenUrlModule } from './shorten-url.module';
 
 describe('ShortenUrl controller', () => {
   let underTest: ShortenUrlController;
 
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
-      imports: [await ConfigModule.forRoot()],
-      controllers: [ShortenUrlController],
-      providers: [ShortenUrlIdGeneratorService, ShortenUrlUsecase],
+      imports: [await ConfigModule.forRoot(), ShortenUrlModule],
     }).compile();
 
     underTest = app.get<ShortenUrlController>(ShortenUrlController);
@@ -21,13 +18,13 @@ describe('ShortenUrl controller', () => {
     it('should return a valid Base62 short URL with 10 chars length', async () => {
       const longUrl =
         'https://zapper.xyz/very-long-url/very-long-url/very-long-url';
-      const shortenedUrl = await underTest.shortenUrl(longUrl); // Assuming it's async
+      const response = await underTest.shortenUrl({ url: longUrl });
 
       // Extract the unique ID part of the URL
-      const urlPattern = /^https:\/\/zapper\.xyz\/([A-Za-z0-9]{10})$/;
-      const match = shortenedUrl.match(urlPattern);
+      const urlPattern = /^http:\/\/localhost:3000\/([A-Za-z0-9]{10})$/;
+      const match = response?.shortenedUrl.match(urlPattern);
 
-      expect(shortenedUrl).not.toBeNull();
+      expect(response).not.toBeNull();
       expect(match).not.toBeNull(); // Ensure it matches the pattern
       expect(match![1].length).toBe(10); // Validate the ID part has 10 characters
     });

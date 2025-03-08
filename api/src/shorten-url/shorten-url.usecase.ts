@@ -1,5 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { ShortenUrlIdGeneratorService } from './shorten-url.id-generator.service';
+import { ShortenUrlRepository } from './shorten-url.repository';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class ShortenUrlUsecase {
@@ -8,15 +10,35 @@ export class ShortenUrlUsecase {
 
   private static BASE62 = ShortenUrlUsecase.BASE62_CHARACTERS.length;
 
-  constructor(private readonly idGenerator: ShortenUrlIdGeneratorService) {}
+  private readonly shortenedBaseUrl: string;
 
-  createTinyURL(originalURL: string): string {
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly idGenerator: ShortenUrlIdGeneratorService,
+    @Inject('ShortenUrlRepository')
+    private readonly shortenUrlRepository: ShortenUrlRepository,
+  ) {
+    if (!this.configService.get<number>('SHORTENED_BASE_URL'))
+      throw new Error(
+        'SHORTENED_BASE_URL is not defined in the environment variables',
+      );
+    this.shortenedBaseUrl =
+      this.configService.get<string>('SHORTENED_BASE_URL');
+  }
+
+  async createTinyURL(originalURL: string): Promise<string> {
+    const existingShortenedUrl = await this.shortenUrlRepository.findURL(
+      originalURL,
+    );
+
+    if (existingShortenedUrl) {
+      return existingShortenedUrl;
+    }
     const id = this.idGenerator.generateId();
-    // encode the id to base 62
-    // return the original URL with the id appended
-    // write your code here
     const encodedId = this.encodeBase62(Number(id));
-    return originalURL + '/' + encodedId;
+    const shortenedUrl = this.shortenedBaseUrl + '/' + encodedId;
+    await this.shortenUrlRepository.create(originalURL, shortenedUrl);
+    return shortenedUrl;
   }
 
   private encodeBase62(id: number): string {
@@ -29,5 +51,14 @@ export class ShortenUrlUsecase {
       id = Math.floor(id / ShortenUrlUsecase.BASE62);
     }
     return encoded;
+  }
+
+  private getBaseUrl(url: string): string {
+    try {
+      const parsedUrl = new URL(url);
+      return `${parsedUrl.protocol}//${parsedUrl.hostname}`;
+    } catch (error) {
+      throw new Error(`Invalid URL: ${url}`);
+    }
   }
 }

@@ -4,35 +4,38 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function POST(request: NextRequest) {
   try {
     const { url } = await request.json();
+    if (!url || typeof url !== 'string') {
+      throw new Error(`Invalid URL format ${url}`);
+    }
+
     const shortenedUrl = await shortenUrl(url);
     return NextResponse.json({ shortenedUrl }, { status: 200 });
   } catch (error) {
-    // Handle errors and return a 400 status with an error message
     console.error('Failed to shorten URL:', error);
-    return NextResponse.json({ error: 'Invalid request' }, { status: 400 });
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : 'Invalid request' },
+      { status: 400 }
+    );
   }
 }
 
-// Example function to simulate URL shortening logic
+// Function to call the backend API
 async function shortenUrl(url: string): Promise<string> {
   try {
-    const response = await fetch('http://localhost:3001/shorten-url', {
-      method: 'POST', // Use POST method
-      headers: {
-        'Content-Type': 'application/json', // Inform the server we are sending JSON
-      },
-      body: JSON.stringify({ url }), // Send URL in request body
+    const requestBody = { url };
+    const response = await fetch('http://localhost:3000/shorten-url', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(requestBody),
     });
 
-    console.log(response);
-
     if (!response.ok) {
-      throw new Error(`Failed to shorten URL: ${response.statusText}`);
+      const errorResponse = await response.json();
+      throw new Error(errorResponse.error || 'Failed to shorten URL');
     }
 
-    const data = await response.text(); // Assume server returns JSON
-    console.log('URL shortened successfully:', data);
-    return data; // Adjust this based on the API response structure
+    const data = await response.json();
+    return data;
   } catch (error) {
     console.error('Error shortening URL:', error);
     throw error;

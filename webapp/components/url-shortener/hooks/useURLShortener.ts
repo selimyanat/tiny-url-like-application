@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { shortenURL } from '../services/url-shorten-service';
-import * as console from 'node:console';
 
 export const useURLShortener = () => {
   const shorten = async () => {

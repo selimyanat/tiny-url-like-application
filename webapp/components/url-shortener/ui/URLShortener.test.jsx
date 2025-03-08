@@ -1,7 +1,7 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect } from '@jest/globals';
 import { URLShortener } from './URLShortener';
-import React, { act } from 'react';
+import React from 'react';
 
 global.fetch = jest.fn();
 
@@ -26,7 +26,7 @@ describe('URLShortenerV2', () => {
     const shortenedUrl = 'https://short.ly/abc123';
     global.fetch = jest.fn().mockResolvedValue({
       ok: true,
-      json: async () => ({ shortenedUrl }), // API response in JSON
+      json: async () => ({ shortenedUrl: shortenedUrl }), // API response in JSON
     });
 
     render(<URLShortener />);
@@ -51,7 +51,6 @@ describe('URLShortenerV2', () => {
       const shortenedUrlTextBox = screen.getByRole('textbox', {
         name: /shortened url/i,
       });
-      //expect(shortenedUrlTextBox).toHaveValue('should-be-a-shortened-url');
       expect(shortenedUrlTextBox).toHaveValue(shortenedUrl);
       expect(
         screen.queryByRole('button', { name: /shorten url/i })
