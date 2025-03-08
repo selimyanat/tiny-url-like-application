@@ -38,6 +38,8 @@ jobs:
       - name: Create .env file
         run: |
           echo "MACHINE_ID=1" > .env
+          echo "PORT=3000" >> .env
+          echo "SHORTENED_BASE_URL=http://localhost:3000" >> .env
         working-directory: api  # Ensure it is created inside `api/`
 
       - name: Run Tests (API)
