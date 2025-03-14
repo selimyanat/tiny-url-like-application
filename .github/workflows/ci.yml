@@ -75,13 +75,13 @@ jobs:
         run: npm test
 
       - name: Debug Next.js Cache Directory
-        run: ls -la .next || echo "No cache directory found"
+        run: ls -la webapp/.next || echo "No cache directory found"
 
       - name: Restore cache Next.js build
         uses: actions/cache@v3
         with:
-          path: .next/cache
-          key: ${{ runner.os }}-nextjs-${{ github.ref_name }}-${{ hashFiles('yarn.lock') }}
+          path: webapp/.next
+          key: ${{ runner.os }}-nextjs-${{ github.ref_name }}-${{ hashFiles('webapp/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-nextjs-${{ github.ref_name }}-
             ${{ runner.os }}-nextjs-
@@ -94,8 +94,8 @@ jobs:
       - name: Store cache Next.js build
         uses: actions/cache@v3
         with:
-          path: .next/cache
-          key: ${{ runner.os }}-nextjs-${{ github.ref_name }}-${{ hashFiles('yarn.lock') }}
+          path: webapp/.next
+          key: ${{ runner.os }}-nextjs-${{ github.ref_name }}-${{ hashFiles('webapp/yarn.lock') }}
 
   # Merge Blocker: Ensure Both Builds Pass
   merge_guard:
