@@ -74,8 +74,25 @@ jobs:
       - name: Run Tests (Webapp)
         run: npm test
 
+      - name: Restore cache Next.js build
+        uses: actions/cache@v3
+        with:
+          path: webapp/.next
+          key: ${{ runner.os }}-nextjs-${{ github.ref_name }}-${{ hashFiles('webapp/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ github.ref_name }}-
+            ${{ runner.os }}-nextjs-
+
       - name: Build Webapp
-        run: yarn build
+        run: | 
+          yarn build
+          ls -la
+
+      - name: Store cache Next.js build
+        uses: actions/cache@v3
+        with:
+          path: webapp/.next
+          key: ${{ runner.os }}-nextjs-${{ github.ref_name }}-${{ hashFiles('webapp/yarn.lock') }}
 
   # Merge Blocker: Ensure Both Builds Pass
   merge_guard:
