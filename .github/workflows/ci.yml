@@ -74,9 +74,6 @@ jobs:
       - name: Run Tests (Webapp)
         run: npm test
 
-      - name: Debug Next.js Cache Directory
-        run: ls -la webapp/.next || echo "No cache directory found"
-
       - name: Restore cache Next.js build
         uses: actions/cache@v3
         with:
