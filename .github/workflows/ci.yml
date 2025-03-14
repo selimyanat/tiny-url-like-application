@@ -87,7 +87,9 @@ jobs:
             ${{ runner.os }}-nextjs-
 
       - name: Build Webapp
-        run: yarn build
+        run: | 
+          yarn build
+          ls -la
 
       - name: Store cache Next.js build
         uses: actions/cache@v3
