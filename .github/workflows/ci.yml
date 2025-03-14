@@ -74,7 +74,7 @@ jobs:
       - name: Run Tests (Webapp)
         run: npm test
 
-      - name: Cache Next.js build
+      - name: Restore cache Next.js build
         uses: actions/cache@v3
         with:
           path: .next/cache
@@ -85,6 +85,12 @@ jobs:
 
       - name: Build Webapp
         run: yarn build
+
+      - name: Store cache Next.js build
+        uses: actions/cache@v3
+        with:
+          path: .next/cache
+          key: ${{ runner.os }}-nextjs-${{ github.ref }}-${{ github.sha }}
 
   # Merge Blocker: Ensure Both Builds Pass
   merge_guard:
