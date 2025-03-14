@@ -78,9 +78,10 @@ jobs:
         uses: actions/cache@v3
         with:
           path: .next/cache
-          key: ${{ runner.os }}-nextjs-${{ github.ref }}
+          key: ${{ runner.os }}-nextjs-${{ github.ref_name }}-${{ hashFiles('yarn.lock') }}
           restore-keys: |
-              ${{ runner.os }}-nextjs
+            ${{ runner.os }}-nextjs-${{ github.ref_name }}-
+            ${{ runner.os }}-nextjs-
 
       - name: Build Webapp
         run: yarn build
@@ -89,7 +90,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: .next/cache
-          key: ${{ runner.os }}-nextjs-${{ github.ref }}
+          key: ${{ runner.os }}-nextjs-${{ github.ref_name }}-${{ hashFiles('yarn.lock') }}
 
   # Merge Blocker: Ensure Both Builds Pass
   merge_guard:
