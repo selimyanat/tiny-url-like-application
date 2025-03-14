@@ -1,10 +1,17 @@
-import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
-import { InMemoryUrlRepository } from '../infrastructure/repository/in-memory-url.repository';
+import { Module, DynamicModule } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ShortenUrlRepository } from '../shorten-url/shorten-url.repository';
+import { RepositoryProvider } from './repository/repository.provider';
 
 @Module({
-  imports: [ConfigModule.forRoot()], // Load environment variables
-  controllers: [],
-  providers: [InMemoryUrlRepository],
+  imports: [ConfigModule], // ✅ Ensure ConfigModule is loaded
 })
-export class InfrastructureModule {}
+export class InfrastructureModule {
+  static register(): DynamicModule {
+    return {
+      module: InfrastructureModule,
+      providers: [RepositoryProvider],
+      exports: [ShortenUrlRepository], // ✅ Export repository so other modules can use it
+    };
+  }
+}
