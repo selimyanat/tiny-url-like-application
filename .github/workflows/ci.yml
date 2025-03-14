@@ -74,6 +74,15 @@ jobs:
       - name: Run Tests (Webapp)
         run: npm test
 
+      - name: Cache Next.js build
+        uses: actions/cache@v3
+        with:
+          path: .next/cache
+          key: ${{ runner.os }}-nextjs-${{ github.ref }}-${{ github.sha }}
+          restore-keys: |
+              ${{ runner.os }}-nextjs-${{ github.ref }}-
+              ${{ runner.os }}-nextjs
+
       - name: Build Webapp
         run: yarn build
 
