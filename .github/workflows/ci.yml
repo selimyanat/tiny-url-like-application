@@ -78,9 +78,8 @@ jobs:
         uses: actions/cache@v3
         with:
           path: .next/cache
-          key: ${{ runner.os }}-nextjs-${{ github.ref }}-${{ github.sha }}
+          key: ${{ runner.os }}-nextjs-${{ github.ref }}
           restore-keys: |
-              ${{ runner.os }}-nextjs-${{ github.ref }}-
               ${{ runner.os }}-nextjs
 
       - name: Build Webapp
@@ -90,7 +89,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: .next/cache
-          key: ${{ runner.os }}-nextjs-${{ github.ref }}-${{ github.sha }}
+          key: ${{ runner.os }}-nextjs-${{ github.ref }}
 
   # Merge Blocker: Ensure Both Builds Pass
   merge_guard:
