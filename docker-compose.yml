@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:7.2.7
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    command: redis-server --save "" --appendonly no --maxmemory 100mb --maxmemory-policy allkeys-lru  # ✅ Disable disk persistence
+    volumes:
+      - redis_data:/data  # ✅ Ensures no persistence to disk
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+
+  redisinsight:
+    image: redis/redisinsight:2.66
+    container_name: redisinsight
+    restart: always
+    ports:
+      - "5540:5540"
+    depends_on:
+      - redis
+    environment:
+      - REDIS_URI=redis://redis:6379  # ✅ Connect RedisInsight to Redis automatically
+
+volumes:
+  redis_data:
+    driver: local
+    driver_opts:
+      type: tmpfs  # ✅ Store Redis data in memory only
+      device: tmpfs

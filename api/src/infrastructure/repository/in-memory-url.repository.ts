@@ -1,5 +1,5 @@
 import { ShortenUrlRepository } from '../../shorten-url/shorten-url.repository';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 
 @Injectable()
 export class InMemoryUrlRepository implements ShortenUrlRepository {
