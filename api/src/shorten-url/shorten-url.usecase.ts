@@ -26,7 +26,7 @@ export class ShortenUrlUsecase {
       this.configService.get<string>('SHORTENED_BASE_URL');
   }
 
-  async createTinyURL(originalURL: string): Promise<string> {
+  async shortenUrl(originalURL: string): Promise<string> {
     const existingShortenedUrl = await this.shortenUrlRepository.findURL(
       originalURL,
     );
