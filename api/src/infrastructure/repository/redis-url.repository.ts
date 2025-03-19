@@ -31,11 +31,32 @@ export class RedisUrlRepository
   }
 
   async create(url: string, shortenedUrl: string): Promise<void> {
-    await this.redisClient.set(url, shortenedUrl, { EX: this.redisTTL });
+    // Use two keys to allow both forward and reverse lookup because:
+    // Efficient retrieval (O(1) time complexity)
+    // No need to scan all keys
+    // Reduces query complexity
+    await this.redisClient.set(
+      `originalUrl:${url}`,
+      `shortenedUrl: ${shortenedUrl}`,
+      {
+        EX: this.redisTTL,
+      },
+    ); // 1 day expiry
+    await this.redisClient.set(
+      `shortenedUrl: ${shortenedUrl}`,
+      `originalUrl: ${url}`,
+      {
+        EX: this.redisTTL,
+      },
+    );
   }
 
-  async findURL(url: string): Promise<string | null> {
-    return await this.redisClient.get(url);
+  async findShortenedURL(shortenedUrl: string): Promise<string | null> {
+    return await this.redisClient.get(`shortenedUrl:${shortenedUrl}`);
+  }
+
+  async findOriginalURL(originalUrl: string): Promise<string | null> {
+    return await this.redisClient.get(`originalUrl:${originalUrl}`);
   }
 
   async onModuleInit() {

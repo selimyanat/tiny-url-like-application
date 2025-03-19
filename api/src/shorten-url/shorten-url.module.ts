@@ -5,13 +5,15 @@ import { ShortenUrlUsecase } from './shorten-url.usecase';
 import { ShortenUrlIdGeneratorService } from './shorten-url.id-generator.service';
 import { InfrastructureModule } from '../infrastructure/infrastructure.module';
 import { ShortenUrlRepository } from './shorten-url.repository';
+import { GetOriginalUrlUsecase } from './get-original-url.usecase';
+import { GetOriginalUrlController } from './get-original-url.controller';
 
 @Module({
   imports: [
     ConfigModule, // ✅ Ensure ConfigModule is available
     InfrastructureModule.register(), // ✅ Register InfrastructureModule dynamically
   ],
-  controllers: [ShortenUrlController],
+  controllers: [ShortenUrlController, GetOriginalUrlController],
   providers: [
     {
       provide: 'ShortenUrlRepository',
@@ -19,6 +21,7 @@ import { ShortenUrlRepository } from './shorten-url.repository';
     },
     ShortenUrlIdGeneratorService,
     ShortenUrlUsecase,
+    GetOriginalUrlUsecase,
   ],
 })
 export class ShortenUrlModule {}

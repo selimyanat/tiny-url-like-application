@@ -9,7 +9,6 @@ import { RedisUrlRepository } from './redis-url.repository';
  */
 export const RepositoryProvider: Provider = {
   // TODO: Use a constant for the key
-  //provide: 'ShortenUrlRepository',
   provide: ShortenUrlRepository,
   useFactory: (configService: ConfigService) => {
     const persistenceType = configService.get<string>(

@@ -27,9 +27,8 @@ export class ShortenUrlUsecase {
   }
 
   async shortenUrl(originalURL: string): Promise<string> {
-    const existingShortenedUrl = await this.shortenUrlRepository.findURL(
-      originalURL,
-    );
+    const existingShortenedUrl =
+      await this.shortenUrlRepository.findShortenedURL(originalURL);
 
     if (existingShortenedUrl) {
       return existingShortenedUrl;
