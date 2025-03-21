@@ -10,11 +10,6 @@ export class InMemoryUrlRepository implements ShortenUrlRepository {
     return Promise.resolve(undefined);
   }
 
-  findShortenedURL(url: string): Promise<string | null> {
-    const shortenedUrl = this.urls.get(url);
-    return Promise.resolve(shortenedUrl);
-  }
-
   findOriginalURL(shortenedUrl: string): Promise<string | null> {
     const originalUrl = Array.from(this.urls.keys()).find(
       (key) => this.urls.get(key) === shortenedUrl,

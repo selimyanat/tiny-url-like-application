@@ -1,19 +1,24 @@
-import { Body, Controller, Get } from '@nestjs/common';
-import { GetOriginalUrlDto } from './get-original-url.dto';
-import { ShortenUrlUsecase } from './shorten-url.usecase';
+import {
+  Controller,
+  Get,
+  NotFoundException,
+  Param,
+  Redirect,
+} from '@nestjs/common';
 import { GetOriginalUrlUsecase } from './get-original-url.usecase';
 
-@Controller('/shorten-url')
+@Controller()
 export class GetOriginalUrlController {
   constructor(private readonly getOriginalUrlUsecase: GetOriginalUrlUsecase) {}
 
-  @Get()
-  async getOriginalUrl(
-    @Body() request: GetOriginalUrlDto,
-  ): Promise<{ originalUrl: string }> {
-    const originalUrl = await this.getOriginalUrlUsecase.getOriginalUrl(
-      request.shortenedUrl,
-    );
-    return { originalUrl };
+  @Get(':slug')
+  @Redirect(undefined, 302)
+  async getOriginalUrl(@Param('slug') slug: string) {
+    const originalUrl = await this.getOriginalUrlUsecase.getOriginalUrl(slug);
+    if (!originalUrl) {
+      throw new NotFoundException(`Shortened URL "${slug}" not found`);
+    }
+    // Use temporary redirect to original URL so that we can capture analytics
+    return { url: originalUrl };
   }
 }

@@ -27,12 +27,6 @@ export class ShortenUrlUsecase {
   }
 
   async shortenUrl(originalURL: string): Promise<string> {
-    const existingShortenedUrl =
-      await this.shortenUrlRepository.findShortenedURL(originalURL);
-
-    if (existingShortenedUrl) {
-      return existingShortenedUrl;
-    }
     const id = this.idGenerator.generateId();
     const encodedId = this.encodeBase62(Number(id));
     const shortenedUrl = this.shortenedBaseUrl + '/' + encodedId;
@@ -50,14 +44,5 @@ export class ShortenUrlUsecase {
       id = Math.floor(id / ShortenUrlUsecase.BASE62);
     }
     return encoded;
-  }
-
-  private getBaseUrl(url: string): string {
-    try {
-      const parsedUrl = new URL(url);
-      return `${parsedUrl.protocol}//${parsedUrl.hostname}`;
-    } catch (error) {
-      throw new Error(`Invalid URL: ${url}`);
-    }
   }
 }

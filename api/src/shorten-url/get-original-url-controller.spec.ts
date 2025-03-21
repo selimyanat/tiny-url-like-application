@@ -17,7 +17,7 @@ describe('ShortenUrl controller', () => {
     underTest = app.get<GetOriginalUrlController>(GetOriginalUrlController);
   });
 
-  describe('getOriginalUrl', () => {
+  describe('Redirect to original url', () => {
     it('should return the original URL for a given shortened URL', async () => {
       const longUrl =
         'https://zapper.xyz/very-long-url/very-long-url/very-long-url';
@@ -26,15 +26,26 @@ describe('ShortenUrl controller', () => {
       const shortenedResponse = await shortenUrlController.shortenUrl({
         url: longUrl,
       });
+
+      // Extract the slug from the shortened URL
       const shortenedUrl = shortenedResponse.shortenedUrl;
+      const slug = shortenedUrl.split('/').pop();
 
       // Now retrieve the original URL using GetOriginalUrlController
-      const response = await underTest.getOriginalUrl({
-        shortenedUrl: shortenedUrl,
-      });
+      const response = await underTest.getOriginalUrl(slug);
 
-      expect(response).not.toBeNull();
-      expect(response.originalUrl).toBe(longUrl);
+      // TODO check with an integration / e2e test the redirection code (302)
+      expect(response).toEqual({ url: longUrl });
     });
+  });
+
+  it('should return 404 if the shortened URL is not found', async () => {
+    const redirect = jest.fn();
+    const res = { redirect } as any;
+
+    const slug = 'does-not-exist';
+    await expect(underTest.getOriginalUrl(slug)).rejects.toThrow(
+      'Shortened URL "does-not-exist" not found',
+    );
   });
 });

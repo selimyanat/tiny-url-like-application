@@ -9,6 +9,8 @@ export class GetOriginalUrlUsecase {
   ) {}
 
   async getOriginalUrl(shortenedUrl: string): Promise<string | null> {
-    return await this.shortenUrlRepository.findOriginalURL(shortenedUrl);
+    // TODO: reconstruct the URL ? or store only the shorted path ??
+    const url = 'http://localhost:3000/' + shortenedUrl;
+    return await this.shortenUrlRepository.findOriginalURL(url);
   }
 }

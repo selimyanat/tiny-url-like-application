@@ -14,9 +14,9 @@ export class RedisUrlRepository
 {
   private readonly DEFAULT_TTL = 100;
 
-  private redisClient: RedisClientType;
+  private readonly redisTTL: number;
 
-  private redisTTL: number;
+  private redisClient: RedisClientType;
 
   constructor(private readonly configService: ConfigService) {
     const redisUrl = this.configService.get<string>('REDIS_URL');
@@ -31,17 +31,6 @@ export class RedisUrlRepository
   }
 
   async create(url: string, shortenedUrl: string): Promise<void> {
-    // Use two keys to allow both forward and reverse lookup because:
-    // Efficient retrieval (O(1) time complexity)
-    // No need to scan all keys
-    // Reduces query complexity
-    await this.redisClient.set(
-      `originalUrl:${url}`,
-      `shortenedUrl: ${shortenedUrl}`,
-      {
-        EX: this.redisTTL,
-      },
-    ); // 1 day expiry
     await this.redisClient.set(
       `shortenedUrl: ${shortenedUrl}`,
       `originalUrl: ${url}`,
@@ -49,10 +38,6 @@ export class RedisUrlRepository
         EX: this.redisTTL,
       },
     );
-  }
-
-  async findShortenedURL(shortenedUrl: string): Promise<string | null> {
-    return await this.redisClient.get(`shortenedUrl:${shortenedUrl}`);
   }
 
   async findOriginalURL(originalUrl: string): Promise<string | null> {
