@@ -14,9 +14,9 @@ export class RedisUrlRepository
 {
   private readonly DEFAULT_TTL = 100;
 
-  private redisClient: RedisClientType;
+  private readonly redisTTL: number;
 
-  private redisTTL: number;
+  private redisClient: RedisClientType;
 
   constructor(private readonly configService: ConfigService) {
     const redisUrl = this.configService.get<string>('REDIS_URL');
@@ -30,12 +30,18 @@ export class RedisUrlRepository
     );
   }
 
-  async create(url: string, shortenedUrl: string): Promise<void> {
-    await this.redisClient.set(url, shortenedUrl, { EX: this.redisTTL });
+  async create(url: string, encodedUrl: string): Promise<void> {
+    await this.redisClient.set(
+      `encodedUrl: ${encodedUrl}`,
+      `originalUrl: ${url}`,
+      {
+        EX: this.redisTTL,
+      },
+    );
   }
 
-  async findURL(url: string): Promise<string | null> {
-    return await this.redisClient.get(url);
+  async findOriginalURL(encodedUrl: string): Promise<string | null> {
+    return await this.redisClient.get(`encodedUrl:${encodedUrl}`);
   }
 
   async onModuleInit() {
