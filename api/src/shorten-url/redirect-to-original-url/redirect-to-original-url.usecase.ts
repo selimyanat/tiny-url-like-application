@@ -8,9 +8,9 @@ export class RedirectToOriginalUrlUsecase {
     private readonly shortenUrlRepository: ShortenUrlRepository,
   ) {}
 
-  async getOriginalUrl(shortenedUrl: string): Promise<string | null> {
+  async redirectToOriginalUrl(slug: string): Promise<string | null> {
     // TODO: reconstruct the URL ? or store only the shorted path ??
-    const url = 'http://localhost:3000/' + shortenedUrl;
+    const url = 'http://localhost:3000/' + slug;
     return await this.shortenUrlRepository.findOriginalURL(url);
   }
 }

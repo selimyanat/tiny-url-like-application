@@ -1,17 +1,17 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ShortenUrlController } from './shorten-url.controller';
+import { CreateShortenUrlController } from './create-shorten-url.controller';
 import { ConfigModule } from '@nestjs/config';
 import { ShortenUrlModule } from '../shorten-url.module';
 
 describe('ShortenUrl controller', () => {
-  let underTest: ShortenUrlController;
+  let underTest: CreateShortenUrlController;
 
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
       imports: [await ConfigModule.forRoot(), ShortenUrlModule],
     }).compile();
 
-    underTest = app.get<ShortenUrlController>(ShortenUrlController);
+    underTest = app.get<CreateShortenUrlController>(CreateShortenUrlController);
   });
 
   describe('shortenUrl', () => {

@@ -16,7 +16,9 @@ export class RedirectToOriginalUrlController {
   @Get(':slug')
   @Redirect(undefined, 302)
   async redirectToOriginalUrl(@Param('slug') slug: string) {
-    const originalUrl = await this.getOriginalUrlUsecase.getOriginalUrl(slug);
+    const originalUrl = await this.getOriginalUrlUsecase.redirectToOriginalUrl(
+      slug,
+    );
     if (!originalUrl) {
       throw new NotFoundException(`Shortened URL "${slug}" not found`);
     }

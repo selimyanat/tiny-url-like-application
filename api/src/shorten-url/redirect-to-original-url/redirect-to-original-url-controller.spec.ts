@@ -1,11 +1,11 @@
-import { ShortenUrlController } from '../create-shorten-url/shorten-url.controller';
+import { CreateShortenUrlController } from '../create-shorten-url/create-shorten-url.controller';
 import { RedirectToOriginalUrlController } from './redirect-to-original-url.controller';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigModule } from '@nestjs/config';
 import { ShortenUrlModule } from '../shorten-url.module';
 
 describe('Redirect to original url controller', () => {
-  let shortenUrlController: ShortenUrlController;
+  let shortenUrlController: CreateShortenUrlController;
   let underTest: RedirectToOriginalUrlController;
 
   beforeEach(async () => {
@@ -13,7 +13,9 @@ describe('Redirect to original url controller', () => {
       imports: [await ConfigModule.forRoot(), ShortenUrlModule],
     }).compile();
 
-    shortenUrlController = app.get<ShortenUrlController>(ShortenUrlController);
+    shortenUrlController = app.get<CreateShortenUrlController>(
+      CreateShortenUrlController,
+    );
     underTest = app.get<RedirectToOriginalUrlController>(
       RedirectToOriginalUrlController,
     );

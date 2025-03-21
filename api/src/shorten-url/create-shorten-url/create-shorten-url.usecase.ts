@@ -4,11 +4,11 @@ import { ShortenUrlRepository } from '../shorten-url.repository';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
-export class ShortenUrlUsecase {
+export class CreateShortenUrlUsecase {
   private static BASE62_CHARACTERS =
     '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 
-  private static BASE62 = ShortenUrlUsecase.BASE62_CHARACTERS.length;
+  private static BASE62 = CreateShortenUrlUsecase.BASE62_CHARACTERS.length;
 
   private readonly shortenedBaseUrl: string;
 
@@ -35,13 +35,13 @@ export class ShortenUrlUsecase {
   }
 
   private encodeBase62(id: number): string {
-    if (id === 0) return ShortenUrlUsecase.BASE62_CHARACTERS[0];
+    if (id === 0) return CreateShortenUrlUsecase.BASE62_CHARACTERS[0];
 
     let encoded = '';
     while (id > 0) {
-      const remainder = id % ShortenUrlUsecase.BASE62;
-      encoded = ShortenUrlUsecase.BASE62_CHARACTERS[remainder] + encoded;
-      id = Math.floor(id / ShortenUrlUsecase.BASE62);
+      const remainder = id % CreateShortenUrlUsecase.BASE62;
+      encoded = CreateShortenUrlUsecase.BASE62_CHARACTERS[remainder] + encoded;
+      id = Math.floor(id / CreateShortenUrlUsecase.BASE62);
     }
     return encoded;
   }
