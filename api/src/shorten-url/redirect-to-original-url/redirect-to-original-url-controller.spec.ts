@@ -1,12 +1,12 @@
-import { ShortenUrlController } from './shorten-url.controller';
-import { GetOriginalUrlController } from './get-original-url.controller';
+import { ShortenUrlController } from '../create-shorten-url/shorten-url.controller';
+import { RedirectToOriginalUrlController } from './redirect-to-original-url.controller';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigModule } from '@nestjs/config';
-import { ShortenUrlModule } from './shorten-url.module';
+import { ShortenUrlModule } from '../shorten-url.module';
 
-describe('ShortenUrl controller', () => {
+describe('Redirect to original url controller', () => {
   let shortenUrlController: ShortenUrlController;
-  let underTest: GetOriginalUrlController;
+  let underTest: RedirectToOriginalUrlController;
 
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
@@ -14,7 +14,9 @@ describe('ShortenUrl controller', () => {
     }).compile();
 
     shortenUrlController = app.get<ShortenUrlController>(ShortenUrlController);
-    underTest = app.get<GetOriginalUrlController>(GetOriginalUrlController);
+    underTest = app.get<RedirectToOriginalUrlController>(
+      RedirectToOriginalUrlController,
+    );
   });
 
   describe('Redirect to original url', () => {
@@ -32,7 +34,7 @@ describe('ShortenUrl controller', () => {
       const slug = shortenedUrl.split('/').pop();
 
       // Now retrieve the original URL using GetOriginalUrlController
-      const response = await underTest.getOriginalUrl(slug);
+      const response = await underTest.redirectToOriginalUrl(slug);
 
       // TODO check with an integration / e2e test the redirection code (302)
       expect(response).toEqual({ url: longUrl });
@@ -44,7 +46,7 @@ describe('ShortenUrl controller', () => {
     const res = { redirect } as any;
 
     const slug = 'does-not-exist';
-    await expect(underTest.getOriginalUrl(slug)).rejects.toThrow(
+    await expect(underTest.redirectToOriginalUrl(slug)).rejects.toThrow(
       'Shortened URL "does-not-exist" not found',
     );
   });

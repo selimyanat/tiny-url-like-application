@@ -5,15 +5,17 @@ import {
   Param,
   Redirect,
 } from '@nestjs/common';
-import { GetOriginalUrlUsecase } from './get-original-url.usecase';
+import { RedirectToOriginalUrlUsecase } from './redirect-to-original-url.usecase';
 
 @Controller()
-export class GetOriginalUrlController {
-  constructor(private readonly getOriginalUrlUsecase: GetOriginalUrlUsecase) {}
+export class RedirectToOriginalUrlController {
+  constructor(
+    private readonly getOriginalUrlUsecase: RedirectToOriginalUrlUsecase,
+  ) {}
 
   @Get(':slug')
   @Redirect(undefined, 302)
-  async getOriginalUrl(@Param('slug') slug: string) {
+  async redirectToOriginalUrl(@Param('slug') slug: string) {
     const originalUrl = await this.getOriginalUrlUsecase.getOriginalUrl(slug);
     if (!originalUrl) {
       throw new NotFoundException(`Shortened URL "${slug}" not found`);

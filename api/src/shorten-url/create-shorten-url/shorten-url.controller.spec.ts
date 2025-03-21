@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ShortenUrlController } from './shorten-url.controller';
 import { ConfigModule } from '@nestjs/config';
-import { ShortenUrlModule } from './shorten-url.module';
+import { ShortenUrlModule } from '../shorten-url.module';
 
 describe('ShortenUrl controller', () => {
   let underTest: ShortenUrlController;

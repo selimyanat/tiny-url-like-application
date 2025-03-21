@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ShortenUrlRepository } from './shorten-url.repository';
+import { ShortenUrlRepository } from '../shorten-url.repository';
 
 @Injectable()
-export class GetOriginalUrlUsecase {
+export class RedirectToOriginalUrlUsecase {
   constructor(
     @Inject('ShortenUrlRepository')
     private readonly shortenUrlRepository: ShortenUrlRepository,

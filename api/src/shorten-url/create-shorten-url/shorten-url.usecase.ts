@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ShortenUrlIdGeneratorService } from './shorten-url.id-generator.service';
-import { ShortenUrlRepository } from './shorten-url.repository';
+import { ShortenUrlRepository } from '../shorten-url.repository';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
