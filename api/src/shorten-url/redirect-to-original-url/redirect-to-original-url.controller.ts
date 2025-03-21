@@ -23,6 +23,6 @@ export class RedirectToOriginalUrlController {
       throw new NotFoundException(`Shortened URL "${slug}" not found`);
     }
     // Use temporary redirect to original URL so that we can capture analytics
-    return { url: originalUrl };
+    return { url: originalUrl.toString() };
   }
 }

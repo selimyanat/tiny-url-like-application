@@ -1,5 +1,5 @@
 export abstract class ShortenUrlRepository {
-  abstract create(url: string, shortenedUrl: string): Promise<void>;
+  abstract create(url: string, encodedUrl: string): Promise<void>;
 
-  abstract findOriginalURL(shortenedUrl: string): Promise<string | null>;
+  abstract findOriginalURL(encodedUrl: string): Promise<string | null>;
 }

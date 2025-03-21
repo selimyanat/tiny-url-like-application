@@ -30,9 +30,9 @@ export class RedisUrlRepository
     );
   }
 
-  async create(url: string, shortenedUrl: string): Promise<void> {
+  async create(url: string, encodedUrl: string): Promise<void> {
     await this.redisClient.set(
-      `shortenedUrl: ${shortenedUrl}`,
+      `encodedUrl: ${encodedUrl}`,
       `originalUrl: ${url}`,
       {
         EX: this.redisTTL,
@@ -40,8 +40,8 @@ export class RedisUrlRepository
     );
   }
 
-  async findOriginalURL(originalUrl: string): Promise<string | null> {
-    return await this.redisClient.get(`originalUrl:${originalUrl}`);
+  async findOriginalURL(encodedUrl: string): Promise<string | null> {
+    return await this.redisClient.get(`encodedUrl:${encodedUrl}`);
   }
 
   async onModuleInit() {

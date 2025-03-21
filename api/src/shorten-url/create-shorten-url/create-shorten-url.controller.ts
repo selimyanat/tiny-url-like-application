@@ -11,7 +11,8 @@ export class CreateShortenUrlController {
     @Body() request: CreateShortenUrlDto,
   ): Promise<{ shortenedUrl: string }> {
     // TODO perhaps it is worth converting the URL from string to URL object
-    const shortenedUrl = await this.shortenUrlUsecase.shortenUrl(request.url);
-    return { shortenedUrl };
+    const url = new URL(request.url);
+    const shortenedUrl = await this.shortenUrlUsecase.shortenUrl(url);
+    return { shortenedUrl: shortenedUrl.toString() };
   }
 }

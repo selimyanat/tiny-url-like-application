@@ -44,9 +44,6 @@ describe('Redirect to original url controller', () => {
   });
 
   it('should return 404 if the shortened URL is not found', async () => {
-    const redirect = jest.fn();
-    const res = { redirect } as any;
-
     const slug = 'does-not-exist';
     await expect(underTest.redirectToOriginalUrl(slug)).rejects.toThrow(
       'Shortened URL "does-not-exist" not found',

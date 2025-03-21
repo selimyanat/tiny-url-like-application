@@ -26,11 +26,11 @@ export class CreateShortenUrlUsecase {
       this.configService.get<string>('SHORTENED_BASE_URL');
   }
 
-  async shortenUrl(originalURL: string): Promise<string> {
+  async shortenUrl(originalURL: URL): Promise<URL> {
     const id = this.idGenerator.generateId();
-    const encodedId = this.encodeBase62(Number(id));
-    const shortenedUrl = this.shortenedBaseUrl + '/' + encodedId;
-    await this.shortenUrlRepository.create(originalURL, shortenedUrl);
+    const encodedUrl = this.encodeBase62(Number(id));
+    await this.shortenUrlRepository.create(originalURL.toString(), encodedUrl);
+    const shortenedUrl = new URL(encodedUrl, this.shortenedBaseUrl);
     return shortenedUrl;
   }
 

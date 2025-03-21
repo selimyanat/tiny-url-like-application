@@ -5,14 +5,14 @@ import { Injectable, Logger } from '@nestjs/common';
 export class InMemoryUrlRepository implements ShortenUrlRepository {
   private urls: Map<string, string> = new Map();
 
-  create(url: string, shortenedUrl: string): Promise<void> {
-    this.urls.set(url, shortenedUrl);
+  create(url: string, encodedUrl: string): Promise<void> {
+    this.urls.set(url, encodedUrl);
     return Promise.resolve(undefined);
   }
 
-  findOriginalURL(shortenedUrl: string): Promise<string | null> {
+  findOriginalURL(encodedUrl: string): Promise<string | null> {
     const originalUrl = Array.from(this.urls.keys()).find(
-      (key) => this.urls.get(key) === shortenedUrl,
+      (key) => this.urls.get(key) === encodedUrl,
     );
     return Promise.resolve(originalUrl || null);
   }
