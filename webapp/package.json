@@ -5,7 +5,7 @@
     "build": "next build",
     "start": "next start",
     "test": "jest --testMatch '**/components/**/*.(test|spec).@(ts|tsx|jsx)'",
-    "test:contract": "jest --testMatch '**/__tests__/pact/**/*.(test|spec).@(ts|tsx|jsx)",
+    "test:contract": "jest --testMatch '**/__tests__/pact/**/*.(test|spec).@(ts|tsx|jsx)'",
     "test:ci": "jest --ci",
     "lint": "eslint . ",
     "lint:fix": "eslint . --fix",
