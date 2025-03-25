@@ -39,7 +39,7 @@ jobs:
         run: yarn test
 
       - name: Run Contract Testings
-        run: npm run test:contract
+        run: yarn test:contract
 
       - name: Restore cache Next.js build
         uses: actions/cache@v3
@@ -97,7 +97,7 @@ jobs:
         run: yarn test
 
       - name: Run Contract Testings
-        run: npm run test:contract
+        run: yarn test:contract
 
       - name: Build API
         run: yarn build
