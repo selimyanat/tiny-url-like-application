@@ -1,12 +1,12 @@
 import path from 'path';
 import { Pact, Matchers } from '@pact-foundation/pact';
-import fetch from 'node-fetch';
+import { createShortenUrl } from '../../lib/create-shorten-url';
 
 const { like } = Matchers;
 
 const provider = new Pact({
-  consumer: 'NextJS-ShortenerApp',
-  provider: 'NestJS-ShortenerAPI',
+  consumer: 'webapp',
+  provider: 'backend-api',
   port: 1234,
   log: path.resolve(__dirname, '../pact/logs', 'pact.log'),
   dir: path.resolve(__dirname, '../pact/pacts'),
@@ -21,7 +21,7 @@ describe('Pact with NestJS shorten-url provider', () => {
   describe('POST /shorten-url', () => {
     beforeEach(() => {
       return provider.addInteraction({
-        state: 'provider can shorten urls',
+        state: undefined,
         uponReceiving: 'a POST request to shorten a url',
         withRequest: {
           method: 'POST',
@@ -34,7 +34,7 @@ describe('Pact with NestJS shorten-url provider', () => {
           },
         },
         willRespondWith: {
-          status: 200,
+          status: 201,
           headers: {
             'Content-Type': 'application/json',
           },
@@ -47,20 +47,11 @@ describe('Pact with NestJS shorten-url provider', () => {
 
     it('sends POST /shorten-url and receives shortened URL', async () => {
       const baseUrl = provider.mockService.baseUrl;
-      const response = await fetch(`${baseUrl}/shorten-url`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ url: 'https://example.com/page1/page2/page3' }),
-      });
-
-      const body = await response.json();
-
-      expect(response.status).toBe(200);
-      expect(body).toEqual({
-        shortenedUrl: 'http://localhost:1234/abc123',
-      });
+      const response = await createShortenUrl(
+        'https://example.com/page1/page2/page3',
+        baseUrl
+      );
+      expect(response).toBe('http://localhost:1234/abc123');
     });
   });
 });

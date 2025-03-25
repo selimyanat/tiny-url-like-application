@@ -10,9 +10,62 @@ on:
 
 jobs:
 
+  # Webapp (Next.js) Build & Test
+  webapp:
+    name: Webapp Build & Test
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: webapp
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: yarn
+          cache-dependency-path: webapp/yarn.lock #  Specify the path to your yarn.lock
+
+      - name: Install Dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Lint Webapp
+        run: yarn lint
+
+      - name: Run Tests
+        run: yarn test
+
+      - name: Run Contract Testings
+        run: npm run test:contract
+
+      - name: Restore cache Next.js build
+        uses: actions/cache@v3
+        with:
+          path: webapp/.next
+          key: ${{ runner.os }}-nextjs-${{ github.ref_name }}-${{ hashFiles('webapp/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ github.ref_name }}-
+            ${{ runner.os }}-nextjs-
+
+      - name: Build Webapp
+        run: |
+          yarn build
+          ls -la
+
+      - name: Store cache Next.js build
+        uses: actions/cache@v3
+        with:
+          path: webapp/.next
+          key: ${{ runner.os }}-nextjs-${{ github.ref_name }}-${{ hashFiles('webapp/yarn.lock') }}
+
+
   api:
     name: API Build & Test
     runs-on: ubuntu-latest
+    needs: webapp
     defaults:
         run:
             working-directory: api
@@ -28,7 +81,7 @@ jobs:
           cache: yarn
           cache-dependency-path: api/yarn.lock #  Specify the path to your yarn.lock
 
-      - name: Install Dependencies (API)
+      - name: Install Dependencies
         working-directory: api
         run: yarn install --frozen-lockfile
 
@@ -40,59 +93,14 @@ jobs:
           cp .env-dev .env
         working-directory: api  # Ensure it is created inside `api/`
 
-      - name: Run Tests (API)
+      - name: Run Tests
         run: yarn test
+
+      - name: Run Contract Testings
+        run: npm run test:contract
 
       - name: Build API
         run: yarn build
-
-  # Webapp (Next.js) Build & Test
-  webapp:
-    name: Webapp Build & Test
-    runs-on: ubuntu-latest
-    defaults:
-        run:
-            working-directory: webapp
-
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
-          cache: yarn
-          cache-dependency-path: webapp/yarn.lock #  Specify the path to your yarn.lock
-
-      - name: Install Dependencies (Webapp)
-        run: yarn install --frozen-lockfile
-
-      - name: Lint Webapp
-        run: yarn lint
-
-      - name: Run Tests (Webapp)
-        run: npm test
-
-      - name: Restore cache Next.js build
-        uses: actions/cache@v3
-        with:
-          path: webapp/.next
-          key: ${{ runner.os }}-nextjs-${{ github.ref_name }}-${{ hashFiles('webapp/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-nextjs-${{ github.ref_name }}-
-            ${{ runner.os }}-nextjs-
-
-      - name: Build Webapp
-        run: | 
-          yarn build
-          ls -la
-
-      - name: Store cache Next.js build
-        uses: actions/cache@v3
-        with:
-          path: webapp/.next
-          key: ${{ runner.os }}-nextjs-${{ github.ref_name }}-${{ hashFiles('webapp/yarn.lock') }}
 
   # Merge Blocker: Ensure Both Builds Pass
   merge_guard:

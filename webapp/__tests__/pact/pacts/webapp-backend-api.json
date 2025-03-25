@@ -1,11 +1,10 @@
 {
   "consumer": {
-    "name": "NextJS-ShortenerApp"
+    "name": "webapp"
   },
   "interactions": [
     {
       "description": "a POST request to shorten a url",
-      "providerState": "provider can shorten urls",
       "request": {
         "body": {
           "url": "https://example.com/page1/page2/page3"
@@ -33,7 +32,7 @@
             "match": "type"
           }
         },
-        "status": 200
+        "status": 201
       }
     }
   ],
@@ -50,6 +49,6 @@
     }
   },
   "provider": {
-    "name": "NestJS-ShortenerAPI"
+    "name": "backend-api"
   }
 }
