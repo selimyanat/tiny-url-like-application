@@ -1,4 +1,11 @@
-import { Body, Controller, Logger, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Logger,
+  Post,
+} from '@nestjs/common';
 import { CreateShortenUrlUsecase } from './create-shorten-url.usecase';
 import { CreateShortenUrlDto } from './create-shorten-url.dto';
 
@@ -7,6 +14,7 @@ export class CreateShortenUrlController {
   constructor(private readonly shortenUrlUsecase: CreateShortenUrlUsecase) {}
 
   @Post()
+  @HttpCode(HttpStatus.CREATED)
   async shortenUrl(
     @Body() request: CreateShortenUrlDto,
   ): Promise<{ shortenedUrl: string }> {

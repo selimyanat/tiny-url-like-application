@@ -1,0 +1,54 @@
+{
+  "consumer": {
+    "name": "webapp"
+  },
+  "interactions": [
+    {
+      "description": "a POST request to shorten a url",
+      "request": {
+        "body": {
+          "url": "https://example.com/page1/page2/page3"
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "matchingRules": {
+          "$.body.url": {
+            "match": "type"
+          }
+        },
+        "method": "POST",
+        "path": "/shorten-url"
+      },
+      "response": {
+        "body": {
+          "shortenedUrl": "http://localhost:1234/abc123"
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "matchingRules": {
+          "$.body.shortenedUrl": {
+            "match": "type"
+          }
+        },
+        "status": 201
+      }
+    }
+  ],
+  "metadata": {
+    "pact-js": {
+      "version": "13.2.0"
+    },
+    "pactRust": {
+      "ffi": "0.4.22",
+      "models": "1.2.3"
+    },
+    "pactSpecification": {
+      "version": "2.0.0"
+    }
+  },
+  "provider": {
+    "name": "backend-api"
+  }
+}
