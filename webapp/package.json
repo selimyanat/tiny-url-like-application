@@ -22,6 +22,8 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "3",
+    "@pact-foundation/pact": "13.2.0",
+    "@pact-foundation/pact-node": "10.18.0",
     "@testing-library/dom": "10.4.0",
     "@testing-library/jest-dom": "6.1.5",
     "@testing-library/react": "14.1.2",
