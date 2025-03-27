@@ -24,9 +24,40 @@ services:
     environment:
       - REDIS_URI=redis://redis:6379  # ✅ Connect RedisInsight to Redis automatically
 
+  dynamodb:
+    image: amazon/dynamodb-local:2.6.0
+    container_name: dynamodb
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      - AWS_ACCESS_KEY_ID=dummy
+      - AWS_SECRET_ACCESS_KEY=dummy
+      - AWS_REGION=local
+    volumes:
+      - dynamodb_data:/home/dynamodblocal/data
+    command: "-jar DynamoDBLocal.jar -sharedDb"
+
+  dynamodb-init:
+    image: amazon/aws-cli:2.25.3
+    container_name: dynamodb-init
+    depends_on:
+      - dynamodb
+    environment:
+      - AWS_ACCESS_KEY_ID=dummy
+      - AWS_SECRET_ACCESS_KEY=dummy
+      - AWS_REGION=local
+    volumes:
+      - ./scripts:/scripts
+    entrypoint: ["/bin/sh", "-c", "/scripts/init-dynamodb.sh"]
+
+
+
 volumes:
   redis_data:
     driver: local
     driver_opts:
       type: tmpfs  # ✅ Store Redis data in memory only
       device: tmpfs
+  dynamodb_data:
+

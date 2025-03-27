@@ -1,17 +1,24 @@
 import { Module, DynamicModule } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { ShortenUrlRepository } from '../shorten-url/shorten-url.repository';
-import { RepositoryProvider } from './repository/repository.provider';
+import { ShortenUrlRepositoryFactory } from './repository/shorten-url/shorten-url-repository.factory';
+import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
+import { DynamoClientProvider } from './provider/dynamodb-client.provider';
+import { RedisClientProvider } from './provider/redis-client.provider';
 
 @Module({
-  imports: [ConfigModule], // ✅ Ensure ConfigModule is loaded
+  imports: [ConfigModule],
 })
 export class InfrastructureModule {
   static register(): DynamicModule {
     return {
       module: InfrastructureModule,
-      providers: [RepositoryProvider],
-      exports: [ShortenUrlRepository], // ✅ Export repository so other modules can use it
+      providers: [
+        RedisClientProvider,
+        DynamoClientProvider,
+        ShortenUrlRepositoryFactory,
+      ],
+      exports: [RedisClientProvider, DynamoDBClient, ShortenUrlRepository],
     };
   }
 }
