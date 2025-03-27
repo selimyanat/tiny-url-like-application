@@ -1,8 +1,8 @@
-import { ShortenUrlRepository } from '../../shorten-url/shorten-url.repository';
+import { ShortenUrlRepository } from '../../../shorten-url/shorten-url.repository';
 import { Injectable, Logger } from '@nestjs/common';
 
 @Injectable()
-export class InMemoryUrlRepository implements ShortenUrlRepository {
+export class InMemoryUrlStorageRepository implements ShortenUrlRepository {
   private urls: Map<string, string> = new Map();
 
   create(url: string, encodedUrl: string): Promise<void> {
