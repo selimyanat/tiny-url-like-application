@@ -21,7 +21,11 @@ describe('ShortenUrl controller', () => {
       const response = await underTest.shortenUrl({ url: longUrl });
 
       // Extract the unique ID part of the URL
-      const urlPattern = /^http:\/\/localhost:3000\/([A-Za-z0-9]{10})$/;
+      const baseUrl = process.env.SHORTENED_BASE_URL;
+      if (!baseUrl) throw new Error('SHORTENED_BASE_URL is not defined');
+
+      const escapedBaseUrl = baseUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // Escape for regex
+      const urlPattern = new RegExp(`^${escapedBaseUrl}/([A-Za-z0-9]{10})$`);
       const match = response?.shortenedUrl.match(urlPattern);
 
       expect(response).not.toBeNull();

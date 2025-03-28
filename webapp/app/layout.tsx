@@ -9,7 +9,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <head>
-        <title>URL Shortener</title>
+        <title>TinyURL like application</title>
       </head>
       <body>
         <ThemeProvider theme={theme}>
