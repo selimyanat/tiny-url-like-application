@@ -1,4 +1,4 @@
-name: Tiny URL CI Pipeline
+name: Tiny-URL-CI-Pipeline
 
 on:
   push:

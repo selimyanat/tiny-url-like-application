@@ -1,0 +1,48 @@
+name: Tiny-URL-CD-Pipeline
+
+on:
+  workflow_run:
+    workflows: ["Tiny-URL-CI-Pipeline"]  # must match `name:` in ci.yml
+    types:
+      - completed
+  workflow_dispatch:
+
+jobs:
+  build-docker-images:
+    #if: >
+     # github.event.workflow_run.conclusion == 'success' &&
+      #github.event.workflow_run.head_branch == 'main'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Cache Docker layers
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-docker-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-docker-
+
+      - name: Build API Docker image
+        run: |
+          docker build \
+            --file api/Dockerfile \
+            --tag your-org/tinyurl-api:main \
+            --cache-from=type=local,src=/tmp/.buildx-cache \
+            --cache-to=type=local,dest=/tmp/.buildx-cache \
+            ./api
+
+      - name: Build Webapp Docker image
+        run: |
+          docker build \
+            --file webapp/Dockerfile \
+            --tag your-org/tinyurl-webapp:main \
+            --cache-from=type=local,src=/tmp/.buildx-cache \
+            --cache-to=type=local,dest=/tmp/.buildx-cache \
+            ./webapp
