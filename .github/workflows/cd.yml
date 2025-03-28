@@ -23,7 +23,11 @@ jobs:
         with:
           driver: docker-container
           buildkitd-flags: --debug
-          use: true
+
+      - name: Create and use a named Buildx builder
+        run: |
+          docker buildx create --use --name mybuilder || docker buildx use mybuilder
+          docker buildx inspect --bootstrap
 
       - name: Cache Docker layers
         uses: actions/cache@v3
@@ -36,6 +40,7 @@ jobs:
       - name: Build API Docker image
         run: |
           docker buildx build \
+            --builder mybuilder \
             --file api/Dockerfile \
             --tag your-org/tinyurl-api:main \
             --cache-from=type=local,src=/tmp/.buildx-cache \
@@ -46,6 +51,7 @@ jobs:
       - name: Build Webapp Docker image
         run: |
           docker buildx build \
+            --builder mybuilder \
             --file webapp/Dockerfile \
             --tag your-org/tinyurl-webapp:main \
             --cache-from=type=local,src=/tmp/.buildx-cache \
