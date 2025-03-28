@@ -1,15 +1,39 @@
 version: '3.8'
 
 services:
+
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: tinyurl-api
+    restart: always
+    ports:
+      - "3001:3000"
+    env_file:
+      - ./api/.env-docker
+
+  webapp:
+    build:
+      context: ./webapp
+      dockerfile: Dockerfile
+    container_name: tinyurl-webapp
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+    env_file:
+      - ./webapp/.env-docker
+
   redis:
     image: redis:7.2.7
     container_name: redis
     restart: always
     ports:
       - "6379:6379"
-    command: redis-server --save "" --appendonly no --maxmemory 100mb --maxmemory-policy allkeys-lru  # ✅ Disable disk persistence
+    command: redis-server --save "" --appendonly no --maxmemory 100mb --maxmemory-policy allkeys-lru  # Disable disk persistence
     volumes:
-      - redis_data:/data  # ✅ Ensures no persistence to disk
+      - redis_data:/data
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
 
@@ -22,7 +46,7 @@ services:
     depends_on:
       - redis
     environment:
-      - REDIS_URI=redis://redis:6379  # ✅ Connect RedisInsight to Redis automatically
+      - REDIS_URI=redis://redis:6379  #Connect RedisInsight to Redis automatically
 
   dynamodb:
     image: amazon/dynamodb-local:2.6.0
