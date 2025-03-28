@@ -5,6 +5,7 @@ on:
     workflows: ["Tiny-URL-CI-Pipeline"]  # must match `name:` in ci.yml
     types:
       - completed
+  workflow_dispatch:
 
 jobs:
   build-docker-images:
