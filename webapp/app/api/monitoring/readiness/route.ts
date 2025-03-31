@@ -6,10 +6,16 @@ export async function GET() {
     if (!apiBaseUrl) {
       throw new Error('API_BASE_URL not configured');
     }
-    const pingResponse = await fetch(`${apiBaseUrl}/ping`);
+    const pingResponse = await fetch(`${apiBaseUrl}/monitoring/ping`);
     const data = await pingResponse.json();
-    if (data.status === 'ok') {
-      return NextResponse.json({ ready: true }, { status: 200 });
+    if (data.status === 'OK') {
+      return NextResponse.json({ status: 'OK' }, { status: 200 });
+    } else {
+      console.log(data);
+      return NextResponse.json(
+        { error: data.message },
+        { status: data.status }
+      );
     }
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 400 });
