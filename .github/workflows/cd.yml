@@ -40,9 +40,9 @@ jobs:
           docker buildx build \
             --builder mybuilder \
             --file api/Dockerfile \
-            --tag your-org/tinyurl-api:main \
-            --cache-from=type=local,src=/tmp/.buildx-cache \
-            --cache-to=type=local,dest=/tmp/.buildx-cache \
+            --tag selim-yanat/tinyurl-api:main \
+            --cache-from=type=gha \
+            --cache-to=type=gha,mode=max \
             --load \
             ./api
 
@@ -52,14 +52,16 @@ jobs:
             --builder mybuilder \
             --file webapp/Dockerfile \
             --tag your-org/tinyurl-webapp:main \
-            --cache-from=type=local,src=/tmp/.buildx-cache \
-            --cache-to=type=local,dest=/tmp/.buildx-cache \
+            --cache-from=type=gha \
+            --cache-to=type=gha,mode=max \
             --load \
             ./webapp
           
+          
+          
       - name: Start docker-compose
         run: |
-          docker-compose -f docker-compose.yml up -d --build
+          docker compose -f docker-compose.yml up -d --build
           
       - name: Smoke test API
         run: |
