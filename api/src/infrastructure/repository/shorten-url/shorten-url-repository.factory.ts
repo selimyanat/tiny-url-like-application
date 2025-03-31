@@ -3,9 +3,8 @@ import { Provider } from '@nestjs/common';
 import { InMemoryUrlStorageRepository } from './in-memory-url-storage.repository';
 import { ShortenUrlRepository } from '../../../shorten-url/shorten-url.repository';
 import { PersistentUrlStorageRepository } from './persistent-url-storage.repository';
-import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { RedisClientProvider } from '../../provider/redis-client.provider';
-import { DynamoDbClientProvider } from '../../provider/dynamo-db-client-provider.service';
+import { DynamoDbClientProvider } from '../../provider/dynamo-db-client-provider';
 
 /**
  * Factory provider to select the appropriate repository implementation based on configuration.

@@ -3,7 +3,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { unmarshall } from '@aws-sdk/util-dynamodb';
 import { RedisClientProvider } from '../../provider/redis-client.provider';
-import { DynamoDbClientProvider } from '../../provider/dynamo-db-client-provider.service';
+import { DynamoDbClientProvider } from '../../provider/dynamo-db-client-provider';
 
 @Injectable()
 export class PersistentUrlStorageRepository implements ShortenUrlRepository {
