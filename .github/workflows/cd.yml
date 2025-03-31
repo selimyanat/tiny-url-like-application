@@ -66,5 +66,5 @@ jobs:
         depends_on:
           - webapp
           - api
-        entrypoint: >
+        run: |
           sh -c "sleep 5 && curl -sf http://localhost:3001 || exit 1"
