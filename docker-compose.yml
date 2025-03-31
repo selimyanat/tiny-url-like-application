@@ -75,8 +75,6 @@ services:
       - ./scripts:/scripts
     entrypoint: ["/bin/sh", "-c", "/scripts/init-dynamodb.sh"]
 
-
-
 volumes:
   redis_data:
     driver: local

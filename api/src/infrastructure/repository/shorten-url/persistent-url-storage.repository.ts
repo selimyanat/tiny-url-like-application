@@ -1,13 +1,9 @@
 import { ShortenUrlRepository } from '../../../shorten-url/shorten-url.repository';
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import {
-  DynamoDBClient,
-  PutItemCommand,
-  GetItemCommand,
-} from '@aws-sdk/client-dynamodb';
 import { unmarshall } from '@aws-sdk/util-dynamodb';
 import { RedisClientProvider } from '../../provider/redis-client.provider';
+import { DynamoDbClientProvider } from '../../provider/dynamo-db-client-provider';
 
 @Injectable()
 export class PersistentUrlStorageRepository implements ShortenUrlRepository {
@@ -18,8 +14,7 @@ export class PersistentUrlStorageRepository implements ShortenUrlRepository {
   constructor(
     private readonly configService: ConfigService,
     private readonly redisClient: RedisClientProvider | null,
-    @Inject(DynamoDBClient)
-    private readonly dynamoDbClient: DynamoDBClient | null,
+    private readonly dynamoDbClient: DynamoDbClientProvider | null,
   ) {
     this.redisTTL = this.configService.get<number>(
       'REDIS_TTL',
@@ -32,17 +27,7 @@ export class PersistentUrlStorageRepository implements ShortenUrlRepository {
     const now = new Date().toISOString();
 
     // Write to DynamoDB
-    await this.dynamoDbClient.send(
-      new PutItemCommand({
-        TableName: this.tableName,
-        Item: {
-          shortId: { S: shortId },
-          originalUrl: { S: originalUrl },
-          createdAt: { S: now },
-        },
-      }),
-    );
-
+    await this.dynamoDbClient.putItem(shortId, originalUrl, this.tableName);
     // Cache in Redis
     await this.redisClient.set(`short:${shortId}`, originalUrl, this.redisTTL);
   }
@@ -58,12 +43,7 @@ export class PersistentUrlStorageRepository implements ShortenUrlRepository {
     Logger.debug(`Cache miss for ${shortId}. Fetching from DynamoDB...`);
 
     // Fall back to DynamoDB
-    const result = await this.dynamoDbClient.send(
-      new GetItemCommand({
-        TableName: this.tableName,
-        Key: { shortId: { S: shortId } },
-      }),
-    );
+    const result = await this.dynamoDbClient.getItem(shortId, this.tableName);
 
     if (!result.Item) return null;
 

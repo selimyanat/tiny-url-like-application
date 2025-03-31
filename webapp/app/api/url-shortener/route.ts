@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
     const shortenedBaseUrl = process.env.SHORTENED_BASE_URL;
 
     if (!shortenedBaseUrl) {
-      throw new Error('SHORTENED_BASE_URL not configured');
+      throw new Error('API_BASE_URL not configured');
     }
     const shortenedUrl = await createShortenUrl(url, shortenedBaseUrl);
     return NextResponse.json({ shortenedUrl }, { status: 200 });

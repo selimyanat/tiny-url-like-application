@@ -16,6 +16,7 @@ export const useURLShortener = () => {
       setMode('shortened');
     } catch (error) {
       setError('An error occurred while shortening the URL');
+      console.error('An error occurred while shortening the URL', error);
     } finally {
       setLoading(false);
     }

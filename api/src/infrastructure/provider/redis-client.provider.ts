@@ -9,6 +9,7 @@ import { createClient, RedisClientType } from 'redis';
 
 @Injectable()
 export class RedisClientProvider implements OnModuleInit, OnModuleDestroy {
+  private readonly RETRY_DELAY_SECONDS = 30_000;
   private client: RedisClientType | null = null;
 
   constructor(private readonly configService: ConfigService) {}
@@ -19,6 +20,16 @@ export class RedisClientProvider implements OnModuleInit, OnModuleDestroy {
 
   async set(key: string, value: string, ttlInSeconds: number): Promise<void> {
     await this.client.set(key, value, { EX: ttlInSeconds });
+  }
+
+  async isReady(): Promise<boolean> {
+    try {
+      await this.client.ping();
+      return true;
+    } catch (error) {
+      Logger.error('Redis client is not ready', error);
+      return false;
+    }
   }
 
   async onModuleInit() {
@@ -33,7 +44,19 @@ export class RedisClientProvider implements OnModuleInit, OnModuleDestroy {
     }
 
     const redisUrl = this.configService.get<string>('REDIS_URL');
-    this.client = createClient({ url: redisUrl });
+    this.client = createClient({
+      url: redisUrl,
+      socket: {
+        reconnectStrategy: (retries) => {
+          if (retries > 5) {
+            Logger.warn('🔌 Redis reconnect limit reached');
+            return new Error('Stop retrying Redis');
+          }
+          Logger.warn('Redis reconnecting...', retries);
+          return this.RETRY_DELAY_SECONDS;
+        },
+      },
+    });
 
     this.client.on('error', (err) =>
       Logger.error('Redis client error', err, 'REDIS_CLIENT'),
