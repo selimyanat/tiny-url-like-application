@@ -56,12 +56,13 @@ jobs:
             --cache-to=type=gha,mode=max \
             --load \
             ./webapp
-          
-          
-          
+
       - name: Start docker-compose
         run: |
           docker compose -f docker-compose.yml up -d --build
+
+      - name: List running containers
+        run: docker ps -a
           
       - name: Smoke test API
         run: |
