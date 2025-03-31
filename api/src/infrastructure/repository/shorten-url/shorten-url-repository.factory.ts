@@ -5,6 +5,7 @@ import { ShortenUrlRepository } from '../../../shorten-url/shorten-url.repositor
 import { PersistentUrlStorageRepository } from './persistent-url-storage.repository';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { RedisClientProvider } from '../../provider/redis-client.provider';
+import { DynamoDbClientProvider } from '../../provider/dynamo-db-client-provider.service';
 
 /**
  * Factory provider to select the appropriate repository implementation based on configuration.
@@ -14,8 +15,8 @@ export const ShortenUrlRepositoryFactory: Provider = {
   provide: ShortenUrlRepository,
   useFactory: (
     configService: ConfigService,
-    redisClientService: RedisClientProvider | null,
-    dynamoDbClient: DynamoDBClient | null,
+    redisClientProvider: RedisClientProvider | null,
+    dynamoDbClientProvider: DynamoDbClientProvider | null,
   ) => {
     const usePersistenceStorage = configService.get<string>(
       'USE_PERSISTENT_STORAGE',
@@ -25,12 +26,12 @@ export const ShortenUrlRepositoryFactory: Provider = {
     if (usePersistenceStorage === 'true') {
       return new PersistentUrlStorageRepository(
         configService,
-        redisClientService,
-        dynamoDbClient,
+        redisClientProvider,
+        dynamoDbClientProvider,
       );
     }
 
     return new InMemoryUrlStorageRepository();
   },
-  inject: [ConfigService, RedisClientProvider, DynamoDBClient],
+  inject: [ConfigService, RedisClientProvider, DynamoDbClientProvider],
 };

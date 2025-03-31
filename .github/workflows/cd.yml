@@ -58,3 +58,15 @@ jobs:
             --cache-to=type=local,dest=/tmp/.buildx-cache \
             --load \
             ./webapp
+          
+      - name: Start docker-compose
+        run: |
+          docker-compose -f docker-compose.yml up -d --build
+
+      - smoke-test:
+        image: curlimages/curl
+        depends_on:
+          - webapp
+          - api
+        entrypoint: >
+          sh -c "sleep 5 && curl -sf http://localhost:3001 || exit 1"
