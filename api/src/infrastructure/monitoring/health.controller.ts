@@ -27,4 +27,9 @@ export class HealthController {
       ? { status: 'OK' }
       : { status: 'KO' };
   }
+
+  @Get('/ping')
+  async ping(): Promise<{ status: string }> {
+    return { status: 'ok' };
+  }
 }
