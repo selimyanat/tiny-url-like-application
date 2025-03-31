@@ -9,6 +9,7 @@ import { createClient, RedisClientType } from 'redis';
 
 @Injectable()
 export class RedisClientProvider implements OnModuleInit, OnModuleDestroy {
+  private readonly RETRY_DELAY_SECONDS = 30_000;
   private client: RedisClientType | null = null;
 
   constructor(private readonly configService: ConfigService) {}
@@ -52,7 +53,7 @@ export class RedisClientProvider implements OnModuleInit, OnModuleDestroy {
             return new Error('Stop retrying Redis');
           }
           Logger.warn('Redis reconnecting...', retries);
-          return 30_000;
+          return this.RETRY_DELAY_SECONDS;
         },
       },
     });
