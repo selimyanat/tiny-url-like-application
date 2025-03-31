@@ -60,11 +60,13 @@ jobs:
       - name: Start docker-compose
         run: |
           docker-compose -f docker-compose.yml up -d --build
-
-      - smoke-test:
-        image: curlimages/curl
-        depends_on:
-          - webapp
-          - api
+          
+      - name: Smoke test API
         run: |
-          sh -c "sleep 5 && curl -sf http://localhost:3001 || exit 1"
+          sleep 15
+          curl -sf http://localhost:3001 || exit 1
+
+      - name: Smoke test Webapp
+        run: |
+          sleep 15
+          curl -sf http://localhost:3000 || exit 1
