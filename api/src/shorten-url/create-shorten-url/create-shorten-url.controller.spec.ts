@@ -27,6 +27,7 @@ describe('ShortenUrl controller', () => {
       const escapedBaseUrl = baseUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // Escape for regex
       const urlPattern = new RegExp(`^${escapedBaseUrl}/([A-Za-z0-9]{10})$`);
       const match = response?.shortenedUrl.match(urlPattern);
+      console.log(response?.shortenedUrl);
 
       expect(response).not.toBeNull();
       expect(match).not.toBeNull(); // Ensure it matches the pattern

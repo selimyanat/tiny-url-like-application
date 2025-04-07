@@ -28,8 +28,6 @@ export class PersistentUrlStorageRepository implements ShortenUrlRepository {
 
     // Write to DynamoDB
     await this.dynamoDbClient.putItem(shortId, originalUrl, this.tableName);
-    // Cache in Redis
-    await this.redisClient.set(`short:${shortId}`, originalUrl, this.redisTTL);
   }
 
   async findOriginalURL(shortId: string): Promise<string | null> {
