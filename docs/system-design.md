@@ -7,4 +7,4 @@ which is widely used in system design interviews.
 * 🔍 [Understand the problem and establish the requirements](/docs/understand-the-problem-and-establish-the-requirements.md)
 * 🧱 [Propose high-level design](/docs/propose-high-level-design.md)
 * 🔬 [Design deep dive](/docs/design-deep-dive.md)
-* ✅ [Wrap-up and Tradeoffs](/docs/wrap-up.md)
+* ✅ [Wrap-up](/docs/wrap-up.md)
