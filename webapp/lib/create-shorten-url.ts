@@ -2,7 +2,7 @@
 import fetch from 'node-fetch';
 
 export async function createShortenUrl(url: string, baseUrl: string) {
-  const response = await fetch(`${baseUrl}/shorten-url`, {
+  const response = await fetch(`${baseUrl}/shortened-urls`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ url }),

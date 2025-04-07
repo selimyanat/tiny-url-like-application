@@ -1,5 +1,5 @@
 export const shortenURL = async (longUrl: string): Promise<string> => {
-  const response = await fetch('/api/url-shortener', {
+  const response = await fetch('/api/shortened-urls', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

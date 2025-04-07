@@ -18,14 +18,14 @@ describe('Pact with NestJS shorten-url provider', () => {
   afterAll(async () => await provider.finalize());
   afterEach(async () => await provider.verify());
 
-  describe('POST /shorten-url', () => {
+  describe('POST /shortened-urls', () => {
     beforeEach(() => {
       return provider.addInteraction({
         state: undefined,
         uponReceiving: 'a POST request to shorten a url',
         withRequest: {
           method: 'POST',
-          path: '/shorten-url',
+          path: '/shortened-urls',
           headers: {
             'Content-Type': 'application/json',
           },

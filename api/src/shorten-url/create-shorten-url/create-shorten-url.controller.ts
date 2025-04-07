@@ -9,7 +9,7 @@ import {
 import { CreateShortenUrlUsecase } from './create-shorten-url.usecase';
 import { CreateShortenUrlDto } from './create-shorten-url.dto';
 
-@Controller('/shorten-url')
+@Controller('/shortened-urls')
 export class CreateShortenUrlController {
   constructor(private readonly shortenUrlUsecase: CreateShortenUrlUsecase) {}
 
